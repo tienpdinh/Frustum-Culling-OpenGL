@@ -1,2 +1,5 @@
 build/
 GEFS/engine
+
+latest_fullLog.log
+latest_readable.log

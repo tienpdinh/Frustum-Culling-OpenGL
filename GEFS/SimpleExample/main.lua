@@ -35,21 +35,36 @@ end
 
 function keyHandler(keys)
   if keys.left then
-    translateModel(dinoID,0,0,-0.1)
+    CameraDirX = CameraDirX * math.cos(0.05) + CameraDirZ * math.sin(0.05)
+    CameraDirZ = -CameraDirX * math.sin(0.05) + CameraDirZ * math.cos(0.05)
   end
   if keys.right then
-    translateModel(dinoID,0,0,0.1)
+    CameraDirX = CameraDirX * math.cos(0.05) - CameraDirZ * math.sin(0.05)
+    CameraDirZ = CameraDirX * math.sin(0.05) + CameraDirZ * math.cos(0.05)
   end
   if keys.up then
-    translateModel(dinoID,0.1,0,0)
+    CameraPosX = CameraPosX + CameraDirX * 0.2
+    CameraPosZ = CameraPosZ + CameraDirZ * 0.2
   end
   if keys.down then
-    translateModel(dinoID,-0.1,0,0)
+    CameraPosX = CameraPosX - CameraDirX * 0.2
+    CameraPosZ = CameraPosZ - CameraDirZ * 0.2
+  end
+  if keys.shift then
+    CameraPosY = CameraPosY - 0.1
+  end
+  if keys.space then
+    CameraPosY = CameraPosY + 0.1
   end
 end
 
-teapotID = addModel("Teapot",0,0,0)
-setModelMaterial(teapotID,"Shiny Red Plastic")
+numObjects = 10
+for i=0,numObjects,1 do
+  for j=0,numObjects,1 do
+    teapotID = addModel("Teapot",i,0,j)
+    setModelMaterial(teapotID,"Shiny Red Plastic")
+  end
+end
 --setModelMaterial(teapotID,"Steel")
 animatedModels[teapotID] = true
 rotYVelModel[teapotID] = 1
