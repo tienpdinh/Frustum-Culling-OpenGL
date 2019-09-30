@@ -410,7 +410,7 @@ void drawSceneGeometry(vector<Model*> toDraw){
 void drawSceneGeometry(vector<Model*> toDraw, glm::vec3 forward, glm::vec3 camPos){
 	glBindVertexArray(modelsVAO);
 
-	float radius = 1;
+	float radius = 2;
 
 	glm::mat4 I;
 	totalTriangles = 0;

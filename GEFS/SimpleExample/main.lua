@@ -58,7 +58,7 @@ function keyHandler(keys)
   end
 end
 
-numObjects = 10
+numObjects = 50
 for i=0,numObjects,1 do
   for j=0,numObjects,1 do
     teapotID = addModel("Teapot",i,0,j)

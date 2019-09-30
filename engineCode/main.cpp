@@ -12,10 +12,11 @@
 #include <external/loguru.hpp>
 
 bool useBloom = false;
+bool useViewFrustumCulling = false;
 bool useShadowMap = true;
 bool drawColliders = false;
 
-int targetFrameRate = 30;
+int targetFrameRate = 60;
 float secondsPerFrame = 1.0f / (float)targetFrameRate;
 float nearPlane = 0.2;
 float farPlane = 20;
@@ -293,8 +294,10 @@ int main(int argc, char *argv[]){
 		glClearColor(0,0,0,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
-		//drawSceneGeometry(curScene.toDraw, camDir, camPos); //Pass 2A: Draw Scene Geometry
+		if (useViewFrustumCulling)
+			drawSceneGeometry(curScene.toDraw, camDir, camPos); //Pass 2A: Draw Scene Geometry
+		else
+			drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
 		if (drawColliders) drawColliderGeometry(); //Pass 2B: Draw Colliders
 		drawSkybox(view, proj); //Pass 2C: Draw Skybox / Sky color
@@ -470,6 +473,12 @@ void configEngine(string configFile, string configName){
 			useBloom = val;
       LOG_F(1,"Using Bloom: %s", useBloom ? "TRUE" : "FALSE");
     }
+		if (commandStr == "useViewFrustumCulling") {
+			int val;
+			sscanf(rawline, "useViewFrustumCulling = %d", &val);
+			useViewFrustumCulling = val;
+			LOG_F(1,"Using View Frustum Culling: %s", useViewFrustumCulling ? "TRUE" : "FALSE");
+		}
 		if (commandStr == "bloomPasses"){ 
 			int val;
 			sscanf(rawline,"bloomPasses = %d", &val);
