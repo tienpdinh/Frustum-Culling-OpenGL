@@ -414,16 +414,17 @@ void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, f
 	// inverse transpose it to the world view
 	// build the 6 plane equations
 	// take the dot product
-	
-	glm::vec4 ntl = glm::vec4(aspectRatio * nearPlane * tan(aFOV / 2), nearPlane * tan(aFOV / 2), nearPlane, 1);
-	glm::vec4 ntr = glm::vec4(-ntl.x, ntl.y, nearPlane, 1);
-	glm::vec4 nbl = glm::vec4(ntl.x, -ntl.y, nearPlane, 1);
-	glm::vec4 nbr = glm::vec4(-ntl.x, -ntl.y, nearPlane, 1);
+	// OpenGL camera is facing the negative z direction
 
-	glm::vec4 ftl = glm::vec4(aspectRatio * farPlane * tan(aFOV / 2), farPlane * tan(aFOV / 2), farPlane, 1);
-	glm::vec4 ftr = glm::vec4(-ftl.x, ftl.y, farPlane, 1);
-	glm::vec4 fbl = glm::vec4(ftl.x, -ftl.y, farPlane, 1);
-	glm::vec4 fbr = glm::vec4(-ftl.x, -ftl.y, farPlane, 1);
+	glm::vec4 ntl = glm::vec4(-aspectRatio * nearPlane * tan(aFOV / 2), nearPlane * tan(aFOV / 2), -nearPlane, 1);
+	glm::vec4 ntr = glm::vec4(-ntl.x, ntl.y, -nearPlane, 1);
+	glm::vec4 nbl = glm::vec4(ntl.x, -ntl.y, -nearPlane, 1);
+	glm::vec4 nbr = glm::vec4(-ntl.x, -ntl.y, -nearPlane, 1);
+
+	glm::vec4 ftl = glm::vec4(-aspectRatio * farPlane * tan(aFOV / 2), farPlane * tan(aFOV / 2), -farPlane, 1);
+	glm::vec4 ftr = glm::vec4(-ftl.x, ftl.y, -farPlane, 1);
+	glm::vec4 fbl = glm::vec4(ftl.x, -ftl.y, -farPlane, 1);
+	glm::vec4 fbr = glm::vec4(-ftl.x, -ftl.y, -farPlane, 1);
 
 	// Bring the points to the world space
 	glm::mat4 viewInv = glm::inverse(view);
@@ -454,15 +455,12 @@ void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, f
 	for (int i = 0; i < toDraw.size(); i++){
 		glm::vec4 pos4 = models[toDraw[i]->ID].transform*glm::vec4(0,0,0,1);
 		float dist;
-		//glm::vec3 test = glm::vec3(pos4-fbl);
 		dist = glm::dot(farNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
-		//printf("pos4: (%f,%f,%f), fbl: (%f,%f,%f), (%f,%f,%f)\n", pos4.x, pos4.y, pos4.z, fbl.x, fbl.y, fbl.z, test.x, test.y, test.z);
 		dist = glm::dot(leftNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
 		dist = glm::dot(rightNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
 		dist = glm::dot(topNormal, glm::vec3(pos4-ntr)); if (dist < -radius) continue;
 		dist = glm::dot(bottomNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
 		dist = glm::dot(nearNormal, glm::vec3(pos4-nbr)); if (dist < -radius) continue;
-		printf("draw model[%d] at (%f,%f,%f)\n",i,pos4.x,pos4.y,pos4.z);
 		
 		drawGeometry(*toDraw[i], -1, I);
 	}

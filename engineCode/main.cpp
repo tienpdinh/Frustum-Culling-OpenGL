@@ -301,7 +301,6 @@ int main(int argc, char *argv[]){
 		// 	drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
 		drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane); //Pass 2A: Draw Scene Geometry
-		printf("---------------------------------------------------camera direction: (%f,%f,%f)\n", camDir.x,camDir.y,camDir.z);
 		
 		if (drawColliders) drawColliderGeometry(); //Pass 2B: Draw Colliders
 		drawSkybox(view, proj); //Pass 2C: Draw Skybox / Sky color
