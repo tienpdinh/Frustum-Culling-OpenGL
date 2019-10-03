@@ -1,13 +1,21 @@
 --Simple Example
 print("Starting Lua for Simple Example")
 
+-- CameraPosX = -3.0
+-- CameraPosY = 1.0
+-- CameraPosZ = 0.0
+
+-- CameraDirX = 1.0
+-- CameraDirY = -0.0
+-- CameraDirZ = -0.0
+
 CameraPosX = -3.0
 CameraPosY = 1.0
 CameraPosZ = 0.0
 
-CameraDirX = 1.0
-CameraDirY = -0.0
-CameraDirZ = -0.0
+CameraDirX = 0.0
+CameraDirY = 0.0
+CameraDirZ = 1.0
 
 CameraUpX = 0.0
 CameraUpY = 1.0

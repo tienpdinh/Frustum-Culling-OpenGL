@@ -294,11 +294,15 @@ int main(int argc, char *argv[]){
 		glClearColor(0,0,0,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (useViewFrustumCulling)
-			drawSceneGeometry(curScene.toDraw, camDir, camPos); //Pass 2A: Draw Scene Geometry
-		else
-			drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
+		// if (useViewFrustumCulling)
+		// // vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane
+		// 	drawSceneGeometry(curScene.toDraw, view, FOV, screenWidth / (float) screenHeight, nearPlane, farPlane); //Pass 2A: Draw Scene Geometry
+		// else
+		// 	drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
+		drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane); //Pass 2A: Draw Scene Geometry
+		printf("---------------------------------------------------camera direction: (%f,%f,%f)\n", camDir.x,camDir.y,camDir.z);
+		
 		if (drawColliders) drawColliderGeometry(); //Pass 2B: Draw Colliders
 		drawSkybox(view, proj); //Pass 2C: Draw Skybox / Sky color
 

@@ -14,8 +14,8 @@ rotate 90 -1 0 0
 flatModel = teapot.txt   
 
 [Teapot]
-child [TeapotHighPoly]
-#child [TeapotLowPoly]
+#child [TeapotHighPoly]
+child [TeapotLowPoly]
 
 [Sphere]
 flatModel = sphere.txt   

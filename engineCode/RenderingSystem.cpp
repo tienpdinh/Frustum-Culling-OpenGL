@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include <external/loguru.hpp>
 #include <external/stb_image.h>
+#include <cmath>
 
 
 using std::vector;
@@ -407,19 +408,62 @@ void drawSceneGeometry(vector<Model*> toDraw){
 	}
 }
 
-void drawSceneGeometry(vector<Model*> toDraw, glm::vec3 forward, glm::vec3 camPos){
+void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane){
 	glBindVertexArray(modelsVAO);
+	// calculate points in camera space
+	// inverse transpose it to the world view
+	// build the 6 plane equations
+	// take the dot product
+	
+	glm::vec4 ntl = glm::vec4(aspectRatio * nearPlane * tan(aFOV / 2), nearPlane * tan(aFOV / 2), nearPlane, 1);
+	glm::vec4 ntr = glm::vec4(-ntl.x, ntl.y, nearPlane, 1);
+	glm::vec4 nbl = glm::vec4(ntl.x, -ntl.y, nearPlane, 1);
+	glm::vec4 nbr = glm::vec4(-ntl.x, -ntl.y, nearPlane, 1);
 
-	float radius = 2;
+	glm::vec4 ftl = glm::vec4(aspectRatio * farPlane * tan(aFOV / 2), farPlane * tan(aFOV / 2), farPlane, 1);
+	glm::vec4 ftr = glm::vec4(-ftl.x, ftl.y, farPlane, 1);
+	glm::vec4 fbl = glm::vec4(ftl.x, -ftl.y, farPlane, 1);
+	glm::vec4 fbr = glm::vec4(-ftl.x, -ftl.y, farPlane, 1);
 
-	glm::mat4 I;
+	// Bring the points to the world space
+	glm::mat4 viewInv = glm::inverse(view);
+	ntl = viewInv * ntl;
+	ntr = viewInv * ntr;
+	nbl = viewInv * nbl;
+	nbr = viewInv * nbr;
+	ftl = viewInv * ftl;
+	ftr = viewInv * ftr;
+	fbl = viewInv * fbl;
+	fbr = viewInv * fbr;
+
+	// Calculate the normal vectors of 6 planes of frustum
+	// Normal vectors pointing inside the frustum
+	glm::vec3 nearNormal = glm::normalize(glm::cross(glm::vec3(nbl-nbr), glm::vec3(ntr-nbr)));
+	glm::vec3 farNormal = glm::normalize(glm::cross(glm::vec3(fbr-fbl), glm::vec3(ftl-fbl)));
+	glm::vec3 leftNormal = glm::normalize(glm::cross(glm::vec3(ftl-fbl), glm::vec3(nbl-fbl)));
+	glm::vec3 rightNormal = glm::normalize(glm::cross(glm::vec3(nbr-fbr), glm::vec3(ftr-fbr)));
+	glm::vec3 topNormal = glm::normalize(glm::cross(glm::vec3(ntl-ntr), glm::vec3(ftr-ntr)));
+	glm::vec3 bottomNormal = glm::normalize(glm::cross(glm::vec3(fbl-fbr), glm::vec3(nbr-fbr)));
+
+	float radius = 1;
+
+	//glm::vec4 camdir = glm::vec4(0,0,1,1);
+	
 	totalTriangles = 0;
-	for (size_t i = 0; i < toDraw.size(); i++){
-		//printf("%s - %d\n",toDraw[i]->name.c_str(),i);
+	glm::mat4 I;
+	for (int i = 0; i < toDraw.size(); i++){
 		glm::vec4 pos4 = models[toDraw[i]->ID].transform*glm::vec4(0,0,0,1);
-		float d = glm::dot(glm::vec3(pos4)-camPos,forward);
-		if (d < radius) continue;
-
+		float dist;
+		//glm::vec3 test = glm::vec3(pos4-fbl);
+		dist = glm::dot(farNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
+		//printf("pos4: (%f,%f,%f), fbl: (%f,%f,%f), (%f,%f,%f)\n", pos4.x, pos4.y, pos4.z, fbl.x, fbl.y, fbl.z, test.x, test.y, test.z);
+		dist = glm::dot(leftNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
+		dist = glm::dot(rightNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
+		dist = glm::dot(topNormal, glm::vec3(pos4-ntr)); if (dist < -radius) continue;
+		dist = glm::dot(bottomNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
+		dist = glm::dot(nearNormal, glm::vec3(pos4-nbr)); if (dist < -radius) continue;
+		printf("draw model[%d] at (%f,%f,%f)\n",i,pos4.x,pos4.y,pos4.z);
+		
 		drawGeometry(*toDraw[i], -1, I);
 	}
 }
