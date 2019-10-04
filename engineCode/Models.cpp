@@ -68,6 +68,22 @@ void addChild(string childName, int curModelID){
 	models[curModelID].numChildren++;
 }
 
+void addChild(string childName, int curModelID, int lod){
+	int childModel = -1;
+	for (int i = 0; i < numModels; i++){
+		if (models[i].name == childName){
+			childModel = i;
+			continue;
+		} 
+	}
+	CHECK_F(childModel >= 0,"No model of name '%s' found to be added as a child model!",childName.c_str());
+
+	LOG_F(1,"Adding child %s",childName.c_str());
+	models[childModel].lod = lod;
+	models[curModelID].childModel.push_back(&models[childModel]);
+	models[curModelID].numChildren++;
+}
+
 void loadModel(string fileName){
 	LOG_SCOPE_FUNCTION(INFO);
 
@@ -331,6 +347,13 @@ void loadModel(string fileName){
 			LOG_F(1,"Adding Child with name %s to model %d",childName.c_str(), curModelID);
 			addChild(childName, curModelID);
     }
+		else if (commandStr == "lodChild"){
+			int openBracket = line.find("[")+1;
+		  int modelNameLength = line.find("]")-openBracket;
+			string childName = line.substr(openBracket,modelNameLength);
+			LOG_F(1,"Adding LOD Child with name %s to model %d",childName.c_str(), curModelID);
+			addChild(childName, curModelID, 1);
+		}
 		else if (commandStr == "material"){ 
 			int openBracket = line.find("[")+1;
 		  int modelNameLength = line.find("]")-openBracket;

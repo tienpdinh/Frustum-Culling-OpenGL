@@ -19,7 +19,7 @@ bool drawColliders = false;
 int targetFrameRate = 60;
 float secondsPerFrame = 1.0f / (float)targetFrameRate;
 float nearPlane = 0.2;
-float farPlane = 20;
+float farPlane = 3;
 
 #include "luaSupport.h"
 
@@ -54,6 +54,7 @@ const string sceneFile = "Scene.txt";
 
 int targetScreenWidth = 1120;
 int targetScreenHeight = 700;
+int lodDistance = 20;
 
 bool saveOutput = false;
 
@@ -300,7 +301,7 @@ int main(int argc, char *argv[]){
 		// else
 		// 	drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
-		drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane); //Pass 2A: Draw Scene Geometry
+		drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane, lodDistance); //Pass 2A: Draw Scene Geometry
 		
 		if (drawColliders) drawColliderGeometry(); //Pass 2B: Draw Colliders
 		drawSkybox(view, proj); //Pass 2C: Draw Skybox / Sky color

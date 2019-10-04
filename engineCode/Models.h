@@ -18,6 +18,7 @@ struct Model{
 	int numChildren = 0;
 	int materialID = -1;
 	int radius = 1;
+	int lod = 0;
 	Collider* collider = nullptr;
 	glm::vec2 textureWrap = glm::vec2(1,1);
 	glm::vec3 modelColor = glm::vec3(1,1,1); //TODO: Perhaps we can replace this simple approach with a more general material blending system?

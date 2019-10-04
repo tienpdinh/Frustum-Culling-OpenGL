@@ -29,9 +29,9 @@ GLint xxxID;
 
 GLuint colliderVAO; //Build a Vertex Array Object for the collider
 
-void drawGeometry(Model model, int matID, glm::mat4 transform = glm::mat4(), glm::vec2 textureWrap=glm::vec2(1,1), glm::vec3 modelColor=glm::vec3(1,1,1));
+void drawGeometry(Model model, int matID, int lod=0, glm::mat4 transform = glm::mat4(), glm::vec2 textureWrap=glm::vec2(1,1), glm::vec3 modelColor=glm::vec3(1,1,1));
 
-void drawGeometry(Model model, int materialID, glm::mat4 transform, glm::vec2 textureWrap, glm::vec3 modelColor){
+void drawGeometry(Model model, int materialID, int lod, glm::mat4 transform, glm::vec2 textureWrap, glm::vec3 modelColor){
 	//printf("Model: %s, num Children %d\n",model.name.c_str(), model.numChildren);
 	//printf("Material ID: %d (passed in id = %d)\n", model.materialID,materialID);
 	//printf("xyx %f %f %f %f\n",model.transform[0][0],model.transform[0][1],model.transform[0][2],model.transform[0][3]);
@@ -51,10 +51,9 @@ void drawGeometry(Model model, int materialID, glm::mat4 transform, glm::vec2 te
 	//textureWrap *= model.textureWrap; //TODO: Where best to apply textureWrap transform?
 	
 	for (int i = 0; i < model.numChildren; i++){
-		drawGeometry(*model.childModel[i], materialID, transform,textureWrap, modelColor);
+		drawGeometry(*model.childModel[i], materialID, lod, transform,textureWrap, modelColor);
 	}
-	if (!model.modelData) return;
-	
+	if (!model.modelData || (lod ^ model.lod)) return; 
 	transform *= model.modelOffset;
 	textureWrap *= model.textureWrap; //TODO: Should textureWrap stack like this?
 
@@ -404,11 +403,11 @@ void drawSceneGeometry(vector<Model*> toDraw){
 	totalTriangles = 0;
 	for (size_t i = 0; i < toDraw.size(); i++){
 		//printf("%s - %d\n",toDraw[i]->name.c_str(),i);
-		drawGeometry(*toDraw[i], -1, I);
+		drawGeometry(*toDraw[i], -1, 0, I);
 	}
 }
 
-void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane){
+void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane, int lodDistance){
 	glBindVertexArray(modelsVAO);
 	// calculate points in camera space
 	// inverse transpose it to the world view
@@ -462,7 +461,10 @@ void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, f
 		dist = glm::dot(bottomNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
 		dist = glm::dot(nearNormal, glm::vec3(pos4-nbr)); if (dist < -radius) continue;
 		
-		drawGeometry(*toDraw[i], -1, I);
+		if (dist > lodDistance)
+			drawGeometry(*toDraw[i], -1, 1, I);
+		else
+			drawGeometry(*toDraw[i], -1, 0, I);
 	}
 }
 

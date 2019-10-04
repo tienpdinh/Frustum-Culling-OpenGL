@@ -35,7 +35,7 @@ function frameUpdate(dt)
 
     local rotYvel = rotYVelModel[modelID]
     if rotYvel then 
-      rotateModel(modelID,rotYvel*dt, 0, 1, 0)
+      --rotateModel(modelID,rotYvel*dt, 0, 1, 0)
     end
 
   end
