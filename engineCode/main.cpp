@@ -19,7 +19,8 @@ bool drawColliders = false;
 int targetFrameRate = 60;
 float secondsPerFrame = 1.0f / (float)targetFrameRate;
 float nearPlane = 0.2;
-float farPlane = 3;
+float farPlane = 20;
+int lodDistance = 5;
 
 #include "luaSupport.h"
 
@@ -54,7 +55,6 @@ const string sceneFile = "Scene.txt";
 
 int targetScreenWidth = 1120;
 int targetScreenHeight = 700;
-int lodDistance = 20;
 
 bool saveOutput = false;
 

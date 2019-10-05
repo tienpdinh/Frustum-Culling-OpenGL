@@ -1,14 +1,6 @@
 --Simple Example
 print("Starting Lua for Simple Example")
 
--- CameraPosX = -3.0
--- CameraPosY = 1.0
--- CameraPosZ = 0.0
-
--- CameraDirX = 1.0
--- CameraDirY = -0.0
--- CameraDirZ = -0.0
-
 CameraPosX = -3.0
 CameraPosY = 1.0
 CameraPosZ = 0.0
@@ -66,7 +58,7 @@ function keyHandler(keys)
   end
 end
 
-numObjects = 50
+numObjects = 20
 for i=0,numObjects,1 do
   for j=0,numObjects,1 do
     teapotID = addModel("Teapot",i,0,j)
