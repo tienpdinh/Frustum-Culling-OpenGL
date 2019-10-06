@@ -15,8 +15,8 @@ bool useBloom = false;
 bool useViewFrustumCulling = false;
 bool useShadowMap = true;
 bool drawColliders = false;
-bool debugMode = false;
 bool useLOD = false;
+bool debugMode = false;
 
 int targetFrameRate = 60;
 float secondsPerFrame = 1.0f / (float)targetFrameRate;
@@ -287,8 +287,7 @@ int main(int argc, char *argv[]){
 
 		//------ PASS 2 - Main (PBR) Shading Pass --------------------
 		
-		if (!debugMode)
-			view = glm::lookAt(camPos, //Camera Position
+		view = glm::lookAt(camPos, //Camera Position
 												lookatPoint, //Point to look at (camPos + camDir)
 		  									camUp);     //Camera Up direction
 		mat4 proj = glm::perspective(FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane); //FOV, aspect, near, far
@@ -303,7 +302,7 @@ int main(int argc, char *argv[]){
 
 		if (useViewFrustumCulling)
 		// vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane
-			drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane, lodDistance, useLOD); //Pass 2A: Draw Scene Geometry
+			drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane, lodDistance, useLOD, debugMode); //Pass 2A: Draw Scene Geometry
 		else
 			drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
@@ -349,6 +348,7 @@ int main(int argc, char *argv[]){
 		ImGui::Text("Total Triangles: %d", totalTriangles);
 		ImGui::Text("Total Shadow Triangles: %d", totalShadowTriangles);
 		ImGui::Text("Camera Pos %f %f %f",camPos.x,camPos.y,camPos.z);
+		ImGui::Text("Debug Camera: %s", debugMode ? "TRUE" : "FALSE");
 		ImGui::End();
 
 		// Render ImGui
