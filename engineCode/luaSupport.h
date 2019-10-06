@@ -45,6 +45,7 @@ int resetTransformation(lua_State * L);
 glm::vec3 getCameraPosFromLau(lua_State * L);
 glm::vec3 getCameraDirFromLau(lua_State * L);
 glm::vec3 getCameraUpFromLau(lua_State * L);
+int getDebugModeFromLau(lua_State * L);
 
 
 //Collision System

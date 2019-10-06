@@ -407,7 +407,7 @@ void drawSceneGeometry(vector<Model*> toDraw){
 	}
 }
 
-void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane, int lodDistance){
+void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane, int lodDistance, bool useLOD){
 	glBindVertexArray(modelsVAO);
 	// calculate points in camera space
 	// inverse transpose it to the world view
@@ -461,7 +461,7 @@ void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, f
 		dist = glm::dot(bottomNormal, glm::vec3(pos4-fbr)); if (dist < -radius) continue;
 		dist = glm::dot(nearNormal, glm::vec3(pos4-nbr)); if (dist < -radius) continue;
 		
-		if (dist > lodDistance)
+		if (dist > lodDistance && useLOD)
 			drawGeometry(*toDraw[i], -1, 1, I);
 		else
 			drawGeometry(*toDraw[i], -1, 0, I);

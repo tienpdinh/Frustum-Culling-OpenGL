@@ -31,6 +31,15 @@ void luaSetup(lua_State * L){
 	lua_register(L, "loadAudio", loadAudio);
 }
 
+//----------- Debug camera activation
+int getDebugModeFromLau(lua_State * L){
+	int argc = lua_gettop(L);
+	lua_getglobal(L, "debugMode");
+	int debugMode = (int)lua_tonumber(L, 1);
+	lua_pop(L, 1);
+	return debugMode;
+}
+
 //----------- Camera ----------
 
 glm::vec3 getCameraPosFromLau(lua_State * L){
@@ -74,7 +83,6 @@ glm::vec3 getCameraUpFromLau(lua_State * L){
 
 
 //------------------- Audio ------------------------
-
 //TODO: Maybe take in audio volume?
 //TODO: Maybe add set (global) volume
 //TODO: Add song path to setting.txt file
