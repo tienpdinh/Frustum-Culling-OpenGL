@@ -1,6 +1,8 @@
 --Simple Example
 print("Starting Lua for Simple Example")
 
+debugMode = 0
+
 CameraPosX = -3.0
 CameraPosY = 1.0
 CameraPosZ = 0.0
@@ -12,6 +14,18 @@ CameraDirZ = 1.0
 CameraUpX = 0.0
 CameraUpY = 1.0
 CameraUpZ = 0.0
+
+DebugCameraPosX = -3.0
+DebugCameraPosY = 1.0
+DebugCameraPosZ = 0.0
+
+DebugCameraDirX = 0.0
+DebugCameraDirY = 0.0
+DebugCameraDirZ = 1.0
+
+DebugCameraUpX = 0.0
+DebugCameraUpY = 1.0
+DebugCameraUpZ = 0.0
 
 animatedModels = {}
 velModel = {}
@@ -37,24 +51,43 @@ function keyHandler(keys)
   if keys.left then
     CameraDirX = CameraDirX * math.cos(0.05) + CameraDirZ * math.sin(0.05)
     CameraDirZ = -CameraDirX * math.sin(0.05) + CameraDirZ * math.cos(0.05)
+
+    DebugCameraDirX = DebugCameraDirX * math.cos(0.05) + DebugCameraDirZ * math.sin(0.05)
+    DebugCameraDirZ = -DebugCameraDirX * math.sin(0.05) + DebugCameraDirZ * math.cos(0.05)
   end
   if keys.right then
     CameraDirX = CameraDirX * math.cos(0.05) - CameraDirZ * math.sin(0.05)
     CameraDirZ = CameraDirX * math.sin(0.05) + CameraDirZ * math.cos(0.05)
+
+    DebugCameraDirX = DebugCameraDirX * math.cos(0.05) - DebugCameraDirZ * math.sin(0.05)
+    DebugCameraDirZ = DebugCameraDirX * math.sin(0.05) + DebugCameraDirZ * math.cos(0.05)
   end
   if keys.up then
     CameraPosX = CameraPosX + CameraDirX * 0.2
     CameraPosZ = CameraPosZ + CameraDirZ * 0.2
+
+    DebugCameraPosX = DebugCameraPosX + DebugCameraDirX * 0.2
+    DebugCameraPosZ = DebugCameraPosZ + DebugCameraDirZ * 0.2
   end
   if keys.down then
     CameraPosX = CameraPosX - CameraDirX * 0.2
     CameraPosZ = CameraPosZ - CameraDirZ * 0.2
+
+    DebugCameraPosX = DebugCameraPosX - DebugCameraDirX * 0.2
+    DebugCameraPosZ = DebugCameraPosZ - DebugCameraDirZ * 0.2
   end
   if keys.shift then
     CameraPosY = CameraPosY - 0.1
+
+    DebugCameraPosY = DebugCameraPosY - 0.1
   end
   if keys.space then
     CameraPosY = CameraPosY + 0.1
+
+    DebugCameraPosY = DebugCameraPosY + 0.1
+  end
+  if keys.d then
+    debugMode = 1 - debugMode
   end
 end
 
