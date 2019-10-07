@@ -14,6 +14,25 @@
 
 using std::vector;
 
+glm::vec4 ntl;
+glm::vec4 ntr;
+glm::vec4 nbl;
+glm::vec4 nbr;
+
+glm::vec4 ftl;
+glm::vec4 ftr;
+glm::vec4 fbl;
+glm::vec4 fbr;
+
+// Calculate the normal vectors of 6 planes of frustum
+// Normal vectors pointing inside the frustum
+glm::vec3 nearNormal;
+glm::vec3 farNormal;
+glm::vec3 leftNormal;
+glm::vec3 rightNormal;
+glm::vec3 topNormal;
+glm::vec3 bottomNormal;
+
 GLuint tex[1000];
 
 bool xxx; //Just an unspecified bool that gets passed to shader for debugging
@@ -407,43 +426,63 @@ void drawSceneGeometry(vector<Model*> toDraw){
 	}
 }
 
-void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane, int lodDistance){
+void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane, int lodDistance, bool useLOD, bool debugMode){
 	glBindVertexArray(modelsVAO);
-	// calculate points in camera space
-	// inverse transpose it to the world view
-	// build the 6 plane equations
-	// take the dot product
-	// OpenGL camera is facing the negative z direction
 
-	glm::vec4 ntl = glm::vec4(-aspectRatio * nearPlane * tan(aFOV / 2), nearPlane * tan(aFOV / 2), -nearPlane, 1);
-	glm::vec4 ntr = glm::vec4(-ntl.x, ntl.y, -nearPlane, 1);
-	glm::vec4 nbl = glm::vec4(ntl.x, -ntl.y, -nearPlane, 1);
-	glm::vec4 nbr = glm::vec4(-ntl.x, -ntl.y, -nearPlane, 1);
+	// glm::vec4 ntl;
+	// glm::vec4 ntr;
+	// glm::vec4 nbl;
+	// glm::vec4 nbr;
 
-	glm::vec4 ftl = glm::vec4(-aspectRatio * farPlane * tan(aFOV / 2), farPlane * tan(aFOV / 2), -farPlane, 1);
-	glm::vec4 ftr = glm::vec4(-ftl.x, ftl.y, -farPlane, 1);
-	glm::vec4 fbl = glm::vec4(ftl.x, -ftl.y, -farPlane, 1);
-	glm::vec4 fbr = glm::vec4(-ftl.x, -ftl.y, -farPlane, 1);
+	// glm::vec4 ftl;
+	// glm::vec4 ftr;
+	// glm::vec4 fbl;
+	// glm::vec4 fbr;
 
-	// Bring the points to the world space
-	glm::mat4 viewInv = glm::inverse(view);
-	ntl = viewInv * ntl;
-	ntr = viewInv * ntr;
-	nbl = viewInv * nbl;
-	nbr = viewInv * nbr;
-	ftl = viewInv * ftl;
-	ftr = viewInv * ftr;
-	fbl = viewInv * fbl;
-	fbr = viewInv * fbr;
+	// // Calculate the normal vectors of 6 planes of frustum
+	// // Normal vectors pointing inside the frustum
+	// glm::vec3 nearNormal;
+	// glm::vec3 farNormal;
+	// glm::vec3 leftNormal;
+	// glm::vec3 rightNormal;
+	// glm::vec3 topNormal;
+	// glm::vec3 bottomNormal;
 
-	// Calculate the normal vectors of 6 planes of frustum
-	// Normal vectors pointing inside the frustum
-	glm::vec3 nearNormal = glm::normalize(glm::cross(glm::vec3(nbl-nbr), glm::vec3(ntr-nbr)));
-	glm::vec3 farNormal = glm::normalize(glm::cross(glm::vec3(fbr-fbl), glm::vec3(ftl-fbl)));
-	glm::vec3 leftNormal = glm::normalize(glm::cross(glm::vec3(ftl-fbl), glm::vec3(nbl-fbl)));
-	glm::vec3 rightNormal = glm::normalize(glm::cross(glm::vec3(nbr-fbr), glm::vec3(ftr-fbr)));
-	glm::vec3 topNormal = glm::normalize(glm::cross(glm::vec3(ntl-ntr), glm::vec3(ftr-ntr)));
-	glm::vec3 bottomNormal = glm::normalize(glm::cross(glm::vec3(fbl-fbr), glm::vec3(nbr-fbr)));
+	if (!debugMode) {
+		// calculate points in camera space
+		// inverse transpose it to the world view
+		// build the 6 plane equations
+		// take the dot product
+		// OpenGL camera is facing the negative z direction
+
+		ntl = glm::vec4(-aspectRatio * nearPlane * tan(aFOV / 2), nearPlane * tan(aFOV / 2), -nearPlane, 1);
+		ntr = glm::vec4(-ntl.x, ntl.y, -nearPlane, 1);
+		nbl = glm::vec4(ntl.x, -ntl.y, -nearPlane, 1);
+		nbr = glm::vec4(-ntl.x, -ntl.y, -nearPlane, 1);
+
+		ftl = glm::vec4(-aspectRatio * farPlane * tan(aFOV / 2), farPlane * tan(aFOV / 2), -farPlane, 1);
+		ftr = glm::vec4(-ftl.x, ftl.y, -farPlane, 1);
+		fbl = glm::vec4(ftl.x, -ftl.y, -farPlane, 1);
+		fbr = glm::vec4(-ftl.x, -ftl.y, -farPlane, 1);
+
+		// Bring the points to the world space
+		glm::mat4 viewInv = glm::inverse(view);
+		ntl = viewInv * ntl;
+		ntr = viewInv * ntr;
+		nbl = viewInv * nbl;
+		nbr = viewInv * nbr;
+		ftl = viewInv * ftl;
+		ftr = viewInv * ftr;
+		fbl = viewInv * fbl;
+		fbr = viewInv * fbr;
+
+		nearNormal = glm::normalize(glm::cross(glm::vec3(nbl-nbr), glm::vec3(ntr-nbr)));
+		farNormal = glm::normalize(glm::cross(glm::vec3(fbr-fbl), glm::vec3(ftl-fbl)));
+		leftNormal = glm::normalize(glm::cross(glm::vec3(ftl-fbl), glm::vec3(nbl-fbl)));
+		rightNormal = glm::normalize(glm::cross(glm::vec3(nbr-fbr), glm::vec3(ftr-fbr)));
+		topNormal = glm::normalize(glm::cross(glm::vec3(ntl-ntr), glm::vec3(ftr-ntr)));
+		bottomNormal = glm::normalize(glm::cross(glm::vec3(fbl-fbr), glm::vec3(nbr-fbr)));
+	}
 
 	float radius = 1;
 

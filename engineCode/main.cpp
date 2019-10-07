@@ -15,6 +15,8 @@ bool useBloom = false;
 bool useViewFrustumCulling = false;
 bool useShadowMap = true;
 bool drawColliders = false;
+bool useLOD = false;
+bool debugMode = false;
 
 int targetFrameRate = 60;
 float secondsPerFrame = 1.0f / (float)targetFrameRate;
@@ -65,6 +67,8 @@ AudioManager audioManager = AudioManager();
 
 
 void configEngine(string configFile, string configName);
+
+mat4 view;
 
 
 int main(int argc, char *argv[]){
@@ -239,6 +243,7 @@ int main(int argc, char *argv[]){
 		vec3 camPos = getCameraPosFromLau(L);
 		vec3 camDir = getCameraDirFromLau(L);
 		vec3 camUp = getCameraUpFromLau(L);
+		debugMode = getDebugModeFromLau(L);
 		vec3 lookatPoint = camPos + camDir;
 
 		//LOG_F(3,"Read Camera from Lua");
@@ -281,10 +286,10 @@ int main(int argc, char *argv[]){
 		glViewport(0, 0, screenWidth, screenHeight); //TODO: Make this more robust when the user switches to fullscreen
 
 		//------ PASS 2 - Main (PBR) Shading Pass --------------------
-
-		mat4 view = glm::lookAt(camPos, //Camera Position
-																lookatPoint, //Point to look at (camPos + camDir)
-		  													camUp);     //Camera Up direction
+		
+		view = glm::lookAt(camPos, //Camera Position
+												lookatPoint, //Point to look at (camPos + camDir)
+		  									camUp);     //Camera Up direction
 		mat4 proj = glm::perspective(FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane); //FOV, aspect, near, far
 		//view = lightViewMatrix; proj = lightProjectionMatrix;  //This was useful to visualize the shadowmap
 
@@ -295,13 +300,12 @@ int main(int argc, char *argv[]){
 		glClearColor(0,0,0,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// if (useViewFrustumCulling)
-		// // vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane
-		// 	drawSceneGeometry(curScene.toDraw, view, FOV, screenWidth / (float) screenHeight, nearPlane, farPlane); //Pass 2A: Draw Scene Geometry
-		// else
-		// 	drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
+		if (useViewFrustumCulling)
+		// vector<Model*> toDraw, glm::mat4 view, float aFOV, float aspectRatio, float nearPlane, float farPlane
+			drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane, lodDistance, useLOD, debugMode); //Pass 2A: Draw Scene Geometry
+		else
+			drawSceneGeometry(curScene.toDraw); //Pass 2A: Draw Scene Geometry
 		//TODO: Add a pass which draws some items without depth culling (e.g. keys, items)
-		drawSceneGeometry(curScene.toDraw, view, FOV * 3.14f/180, screenWidth / (float) screenHeight, nearPlane, farPlane, lodDistance); //Pass 2A: Draw Scene Geometry
 		
 		if (drawColliders) drawColliderGeometry(); //Pass 2B: Draw Colliders
 		drawSkybox(view, proj); //Pass 2C: Draw Skybox / Sky color
@@ -344,6 +348,7 @@ int main(int argc, char *argv[]){
 		ImGui::Text("Total Triangles: %d", totalTriangles);
 		ImGui::Text("Total Shadow Triangles: %d", totalShadowTriangles);
 		ImGui::Text("Camera Pos %f %f %f",camPos.x,camPos.y,camPos.z);
+		ImGui::Text("Debug Camera: %s", debugMode ? "TRUE" : "FALSE");
 		ImGui::End();
 
 		// Render ImGui
@@ -489,6 +494,18 @@ void configEngine(string configFile, string configName){
 			numBloomPasses = val;
       LOG_F(1,"Number of bloom passes: %d", numBloomPasses);
     }
+		// if (commandStr == "useLOD"){
+		// 	int val;
+		// 	sscanf(rawline,"useLOD = %d", &val);
+		// 	useLOD = val;
+		// 	LOG_F(1,"Level of Details: %s", useLOD ? "TRUE" : "FALSE");
+		// }
+		// if (commandStr == "lodDistance"){
+		// 	int val;
+		// 	sscanf(rawline,"lodDistance = %d", &val);
+		// 	lodDistance = val;
+		// 	LOG_F(1,"Level of Details Distance: %d", lodDistance);
+		// }
 	}
 }
 

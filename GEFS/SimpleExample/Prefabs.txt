@@ -4,12 +4,9 @@ modelDir = ./models/
 #teapot knot sphere teapotLowPoly teapot cube
 
 [TeapotLowPoly]
-rotate 0 -1 0 0
-scale .9
 flatModel = teapotLowPoly.txt
 
 [TeapotHighPoly]
-translate 0 .25 0
 rotate 90 -1 0 0
 flatModel = teapot.txt   
 
