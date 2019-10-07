@@ -86,9 +86,10 @@ function keyHandler(keys)
 
     DebugCameraPosY = DebugCameraPosY + 0.1
   end
-  if keys.d then
+  if keys.d and not dDown then
     debugMode = 1 - debugMode
   end
+  dDown = keys.d
 end
 
 numObjects = 20
