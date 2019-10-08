@@ -494,18 +494,18 @@ void configEngine(string configFile, string configName){
 			numBloomPasses = val;
       LOG_F(1,"Number of bloom passes: %d", numBloomPasses);
     }
-		// if (commandStr == "useLOD"){
-		// 	int val;
-		// 	sscanf(rawline,"useLOD = %d", &val);
-		// 	useLOD = val;
-		// 	LOG_F(1,"Level of Details: %s", useLOD ? "TRUE" : "FALSE");
-		// }
-		// if (commandStr == "lodDistance"){
-		// 	int val;
-		// 	sscanf(rawline,"lodDistance = %d", &val);
-		// 	lodDistance = val;
-		// 	LOG_F(1,"Level of Details Distance: %d", lodDistance);
-		// }
+		if (commandStr == "useLOD"){
+			int val;
+			sscanf(rawline,"useLOD = %d", &val);
+			useLOD = val;
+			LOG_F(1,"Level of Details: %s", useLOD ? "TRUE" : "FALSE");
+		}
+		if (commandStr == "lodDistance"){
+			int val;
+			sscanf(rawline,"lodDistance = %d", &val);
+			lodDistance = val;
+			LOG_F(1,"Level of Details Distance: %d", lodDistance);
+		}
 	}
 }
 

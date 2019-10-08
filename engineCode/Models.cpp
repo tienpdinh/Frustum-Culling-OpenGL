@@ -80,6 +80,10 @@ void addChild(string childName, int curModelID, int lod){
 
 	LOG_F(1,"Adding child %s",childName.c_str());
 	models[childModel].lod = lod;
+	for ( auto& child : models[childModel].childModel )
+	{
+		child->lod = lod;
+	}
 	models[curModelID].childModel.push_back(&models[childModel]);
 	models[curModelID].numChildren++;
 }
@@ -352,6 +356,7 @@ void loadModel(string fileName){
 			int openBracket = line.find("[")+1;
 		  int modelNameLength = line.find("]")-openBracket;
 			string childName = line.substr(openBracket,modelNameLength);
+			//printf("%s\n", childName.c_str());
 			LOG_F(1,"Adding LOD Child with name %s to model %d",childName.c_str(), curModelID);
 			addChild(childName, curModelID, 1);
 		}

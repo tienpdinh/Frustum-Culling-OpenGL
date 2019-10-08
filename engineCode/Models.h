@@ -17,7 +17,7 @@ struct Model{
 	int numVerts = 0;
 	int numChildren = 0;
 	int materialID = -1;
-	int radius = 1;
+	int radius = 3;
 	int lod = 0;
 	Collider* collider = nullptr;
 	glm::vec2 textureWrap = glm::vec2(1,1);
