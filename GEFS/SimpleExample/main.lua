@@ -3,7 +3,7 @@ print("Starting Lua for Simple Example")
 
 debugMode = 0
 
-CameraPosX = -3.0
+CameraPosX = 0.0
 CameraPosY = 1.0
 CameraPosZ = 0.0
 
@@ -64,20 +64,11 @@ function keyHandler(keys)
   dDown = keys.d
 end
 
-numObjects = 30
-for i=0,numObjects,1 do
-  for j=0,numObjects,1 do
-    teapotID = addModel("Teapot",i,0,j)
-    setModelMaterial(teapotID,"Shiny Red Plastic")
+numObjects = 25
+for i=-numObjects/2,numObjects/2,1 do
+  for j=-numObjects/2,numObjects/2,1 do
+    teapotID = addModel("Alien",i,0,j)
+    -- setModelMaterial(teapotID,"Shiny Red Plastic")
   end
 end
---setModelMaterial(teapotID,"Steel")
-animatedModels[teapotID] = true
-rotYVelModel[teapotID] = 1
 
-floorID = addModel("FloorPart",0,0,0)
-placeModel(floorID,0,-.02,0)
-scaleModel(floorID,3,1,3)
-setModelMaterial(floorID,"Gold")
-
-dinoID = addModel("Dino",0,0,-.15)

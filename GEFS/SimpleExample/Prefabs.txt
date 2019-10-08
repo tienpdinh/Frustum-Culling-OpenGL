@@ -1,6 +1,30 @@
 
 modelDir = ./models/
 
+[BunnyLowPoly]
+scale 0.5
+objModel = bunnylowpoly.obj
+
+[BunnyHighPoly]
+scale 0.5
+objModel = bunny.obj
+
+[Bunny]
+child [BunnyHighPoly]
+lodChild [BunnyLowPoly]
+
+[AlienHighPoly]
+scale 0.3
+objModel = Alien_Helmet.obj
+
+[AlienLowPoly]
+scale 0.3
+objModel = Alien.obj
+
+[Alien]
+child [AlienHighPoly]
+lodChild [AlienLowPoly]
+
 #teapot knot sphere teapotLowPoly teapot cube
 
 [TeapotLowPoly]
@@ -11,8 +35,8 @@ rotate 90 -1 0 0
 flatModel = teapot.txt   
 
 [Teapot]
-child [TeapotHighPoly]
-lodChild [TeapotLowPoly]
+child [AlienHighPoly]
+lodChild [AlienLowPoly]
 
 [Sphere]
 flatModel = sphere.txt   
