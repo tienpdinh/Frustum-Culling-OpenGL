@@ -137,6 +137,7 @@ void loadModel(string fileName){
 			float scaleFactor;
 			sscanf(rawline,"scale %f", &scaleFactor);
 			models[curModelID].transform = glm::scale(models[curModelID].transform, scaleFactor*glm::vec3(1,1,1));
+			models[curModelID].radius *= scaleFactor;
       LOG_F(1,"Scaling by %f",scaleFactor);
     }
 		else if (commandStr == "scalexyz"){ 

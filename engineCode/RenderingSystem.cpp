@@ -484,14 +484,13 @@ void drawSceneGeometry(std::vector<Model*> toDraw, glm::mat4 view, float aFOV, f
 		bottomNormal = glm::normalize(glm::cross(glm::vec3(fbl-fbr), glm::vec3(nbr-fbr)));
 	}
 
-	float radius = 1;
-
 	//glm::vec4 camdir = glm::vec4(0,0,1,1);
 	
 	totalTriangles = 0;
 	glm::mat4 I;
 	for (int i = 0; i < toDraw.size(); i++){
 		glm::vec4 pos4 = models[toDraw[i]->ID].transform*glm::vec4(0,0,0,1);
+		float radius = models[toDraw[i]->ID].radius;
 		float dist;
 		dist = glm::dot(farNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
 		dist = glm::dot(leftNormal, glm::vec3(pos4-fbl)); if (dist < -radius) continue;
