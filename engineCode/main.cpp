@@ -280,7 +280,7 @@ int main(int argc, char *argv[]){
 			lightUp = glm::cross(vec3(lightDir.y,lightDir.x,lightDir.z),lookatPoint-lightPos);
 			lightViewMatrix = glm::lookAt(lightPos,lookatPoint, lightUp); 
 
-			computeShadowDepthMap(lightViewMatrix, lightProjectionMatrix, curScene.toDraw);
+			//computeShadowDepthMap(lightViewMatrix, lightProjectionMatrix, curScene.toDraw);
 		}
 
 		glViewport(0, 0, screenWidth, screenHeight); //TODO: Make this more robust when the user switches to fullscreen
